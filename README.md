@@ -36,7 +36,8 @@ ros2 launch stretch_base_hazard hazard_map.launch.py \
 If your merged cloud is already in the desired base frame, leave `lidar_frame`
 empty so the node uses `PointCloud2.header.frame_id`. Set `lidar_frame:=base_link`
 only when you want to override a missing or wrong header. `line_frame` behaves
-the same way for the line-sensor point-cloud topics.
+the same way for the line-sensor point-cloud topics. Line-sensor range cleanup
+is handled upstream by the `stretch_core` line-sensor publisher.
 
 Run the dual-Hesai filter once and share both outputs by enabling the point-cloud
 publisher on the existing `stretch_core` launch:
@@ -54,6 +55,36 @@ floor logic needs 3D `z` evidence. The useful `stretch_core` setup is
 If you feed a `sor_ransac` cloud, remember that the published cloud is after
 floor removal; obstacle evidence will still be useful, but cliff/floor-clear
 evidence is better when the shared cloud retains near-floor points.
+
+## Hazard-Aware Teleop
+
+For the Stretch gamepad path, launch the hazard-aware gamepad wrapper:
+
+```bash
+ros2 launch stretch_base_hazard hazard_gamepad_teleop.launch.py
+```
+
+This starts `hazard_gamepad_teleop`, reads the same hazard point topics from
+`config/hazard_teleop_filter.yaml`, and wraps the Stretch gamepad base velocity
+commands before they reach the base.
+
+For ROS `Twist` teleop pipelines, launch the command-velocity filter:
+
+```bash
+ros2 launch stretch_base_hazard hazard_cmd_vel_filter.launch.py
+```
+
+That node subscribes to `cmd_vel_unfiltered` and publishes filtered commands on
+`cmd_vel`. The upstream teleop node must publish to `cmd_vel_unfiltered` for
+this path to do anything.
+
+Obstacle handling uses two zones so tight doorways can be crossed slowly:
+
+- `hard_obstacle_buffer_m` - obstacle points inside `footprint_m + hard_obstacle_buffer_m` stop linear motion.
+- `soft_obstacle_buffer_m` - obstacle points inside `footprint_m + soft_obstacle_buffer_m` slow linear motion when the hard zone is clear.
+- `min_clearance_speed_scale` and `creep_linear_speed_mps` set the slow-zone scale and speed cap.
+
+Cliff points still hard-stop linear motion using `cliff_buffer_m`.
 
 ## Stretch Core Point-Cloud Notes
 

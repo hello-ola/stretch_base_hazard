@@ -33,6 +33,7 @@ setup(
         'console_scripts': [
             'hazard_map_node = stretch_base_hazard.hazard_map_node:main',
             'hazard_cmd_vel_filter_node = stretch_base_hazard.hazard_cmd_vel_filter_node:main',
+            'hazard_gamepad_teleop = stretch_base_hazard.hazard_gamepad_teleop:main',
         ],
     },
 )

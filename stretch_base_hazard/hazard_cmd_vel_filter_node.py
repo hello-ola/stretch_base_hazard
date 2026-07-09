@@ -74,6 +74,15 @@ class HazardCmdVelFilterNode(Node):
                 f'cliff_cells={result.blocking_cliff_count}',
                 throttle_duration_sec=0.5,
             )
+        elif result.slowed_by_obstacle:
+            self.get_logger().warning(
+                'Slowing cmd_vel linear velocity for tight clearance '
+                f'vx={msg.linear.x:.3f}->{result.vx:.3f} '
+                f'vy={msg.linear.y:.3f}->{result.vy:.3f} '
+                f'scale={result.obstacle_speed_scale:.2f} '
+                f'soft_obstacle_cells={result.soft_obstacle_count}',
+                throttle_duration_sec=0.5,
+            )
 
 
 def main(args=None):

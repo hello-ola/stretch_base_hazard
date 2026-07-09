@@ -338,6 +338,10 @@ def declare_hazard_filter_parameters(node: Node) -> None:
     node.declare_parameter('cliff_lookahead_m', 0.80)
     node.declare_parameter('footprint_m', 0.35)
     node.declare_parameter('obstacle_buffer_m', 0.02)
+    node.declare_parameter('hard_obstacle_buffer_m', 0.01)
+    node.declare_parameter('soft_obstacle_buffer_m', 0.10)
+    node.declare_parameter('min_clearance_speed_scale', 0.20)
+    node.declare_parameter('creep_linear_speed_mps', 0.05)
     node.declare_parameter('cliff_buffer_m', 0.20)
     node.declare_parameter('min_linear_speed_mps', 1e-4)
     node.declare_parameter('blocked_directions_topic', '/under_base_hazard/blocked_directions')
@@ -362,6 +366,10 @@ def hazard_point_cache_config_from_params(node: Node) -> HazardPointCacheConfig:
             cliff_lookahead_m=float(get('cliff_lookahead_m').value),
             footprint_m=float(get('footprint_m').value),
             obstacle_buffer_m=float(get('obstacle_buffer_m').value),
+            hard_obstacle_buffer_m=float(get('hard_obstacle_buffer_m').value),
+            soft_obstacle_buffer_m=float(get('soft_obstacle_buffer_m').value),
+            min_clearance_speed_scale=float(get('min_clearance_speed_scale').value),
+            creep_linear_speed_mps=float(get('creep_linear_speed_mps').value),
             cliff_buffer_m=float(get('cliff_buffer_m').value),
             min_linear_speed_mps=float(get('min_linear_speed_mps').value),
         ),
