@@ -86,15 +86,5 @@ Obstacle handling uses two zones so tight doorways can be crossed slowly:
 
 Cliff points still hard-stop linear motion using `cliff_buffer_m`.
 
-## Stretch Core Point-Cloud Notes
-
-For reusable perception, the most useful `stretch_core` point-cloud behavior is
-to expose named outputs with distinct semantics:
-
-- navigation scan: tuned for `/scan_filtered`
-- reusable merged cloud: transformed, self-filtered/SOR-filtered, and published
-  as `PointCloud2`
-- hazard-friendly cloud: near-floor points preserved when cliff detection matters
-
 Keeping those outputs separate prevents Nav2 tuning from accidentally removing
 the low floor and drop evidence needed by this package.
